@@ -1,14 +1,25 @@
 import csv
+from numpy import math
 
 class Vocabulary:
     def __init__(self, dataset, filtered):
-        self.real_news = {}
-        self.fake_news = {}
-        self.real_news_size = 0
-        self.fake_news_size = 0
         tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
+        self.real_news = {}
+        self.real_news_size = 0
+        self.real_news_probability = {}
+        self.real_news_training_size = 0
+
+        self.fake_news = {}
+        self.fake_news_size = 0
+        self.fake_news_probability = {}
+        self.fake_news_training_size = 0
+
+        
+
+        # create vocabulary for fake news and real news
         for row in tsv_file:
             if(row[2] == 'yes'):
+                self.real_news_training_size += 1
                 for word in row[1].split():
                     if(word in self.real_news):
                         self.real_news[word] = self.real_news.get(word) + 1
@@ -28,6 +39,7 @@ class Vocabulary:
                 
 
             elif (row[2] == 'no'):
+                self.fake_news_training_size += 1
                 for word in row[1].split():
                     if(word in self.fake_news):
                         self.fake_news[word] = self.fake_news.get(word) + 1
@@ -44,6 +56,33 @@ class Vocabulary:
                     
                     for key in keys_to_delete:
                         del self.fake_news[key]
+        
+        # create dictionary with all probabilities for each word - NO SMOOTHING
+        for (key, value) in self.real_news:
+            self.real_news_probability[key] = math.log(value/self.real_news_size)
+        
+        for (key, value) in self.real_news:
+            self.fake_news_probability[key] = math.log(value/self.fake_news.size)
+        
+        # evaluate each tweet individually
+        total_size = self.fake_news_training_size + self.real_news_training_size
+        for row in tsv_file:
+            real_news_score = 0
+            fake_news_score = 0
+
+            for word in row[1].split():
+                if(word in self.real_news_probability):
+                    real_news_score += self.real_news_probability.get(word)
+
+                if(word in self.real_news_probability):
+                    fake_news_score += self.fake_news_probability.get(word)
+        
+            print("FAKE NEWS SCORE ->", fake_news_score + math.log(self.fake_news_training_size/total_size), ", REAL NEW SCORE -> ", real_news_score + math.log(self.real_news_training_size/total_size))
+
+            if(fake_news_score < real_news_score):
+                print("REAL NEWS", row[2])
+            else:
+                print("FAKE NEWS", row[2])
 
 
 print("------------------------ORIGINAL VOCABULARY------------------------")
