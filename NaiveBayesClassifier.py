@@ -1,7 +1,7 @@
 import csv
-from numpy import math
+import math
 
-class Vocabulary:
+class NaiveBayesClassifier:
     def __init__(self, dataset, filtered):
         tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
         self.real_news = {}
@@ -14,9 +14,11 @@ class Vocabulary:
         self.fake_news_probability = {}
         self.fake_news_training_size = 0
 
-        
-
-        # create vocabulary for fake news and real news
+        self.create_vocabulary(filtered, tsv_file)
+        self.probability_dictionary()
+        self.evaluate_tweets(dataset)
+    
+    def create_vocabulary(self, filtered, tsv_file):
         for row in tsv_file:
             if(row[2] == 'yes'):
                 self.real_news_training_size += 1
@@ -56,16 +58,19 @@ class Vocabulary:
                     
                     for key in keys_to_delete:
                         del self.fake_news[key]
-        
-        # create dictionary with all probabilities for each word - NO SMOOTHING
-        for (key, value) in self.real_news:
+            else:
+                print(row)
+    
+    def probability_dictionary(self):
+        for (key, value) in self.real_news.items():
             self.real_news_probability[key] = math.log(value/self.real_news_size)
         
-        for (key, value) in self.real_news:
-            self.fake_news_probability[key] = math.log(value/self.fake_news.size)
-        
-        # evaluate each tweet individually
-        total_size = self.fake_news_training_size + self.real_news_training_size
+        for (key, value) in self.fake_news.items():
+            self.fake_news_probability[key] = math.log(value/self.fake_news_size)
+    
+    def evaluate_tweets(self, dataset):
+        tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
+        self.total_size = self.fake_news_training_size + self.real_news_training_size
         for row in tsv_file:
             real_news_score = 0
             fake_news_score = 0
@@ -74,10 +79,8 @@ class Vocabulary:
                 if(word in self.real_news_probability):
                     real_news_score += self.real_news_probability.get(word)
 
-                if(word in self.real_news_probability):
+                if(word in self.fake_news_probability):
                     fake_news_score += self.fake_news_probability.get(word)
-        
-            print("FAKE NEWS SCORE ->", fake_news_score + math.log(self.fake_news_training_size/total_size), ", REAL NEW SCORE -> ", real_news_score + math.log(self.real_news_training_size/total_size))
 
             if(fake_news_score < real_news_score):
                 print("REAL NEWS", row[2])
@@ -85,21 +88,21 @@ class Vocabulary:
                 print("FAKE NEWS", row[2])
 
 
-print("------------------------ORIGINAL VOCABULARY------------------------")
-original_vocabulary = Vocabulary('./datasets/covid_training.tsv', False)
-print("Real News")
-#print(original_vocabulary.real_news)
-print(original_vocabulary.real_news_size)
-print()
-print("FAKE NEWS")
-#print(original_vocabulary.fake_news)
-print(original_vocabulary.fake_news_size)
+# print("------------------------ORIGINAL VOCABULARY------------------------")
+# original_vocabulary = Vocabulary('./datasets/covid_training.tsv', False)
+# print("Real News")
+# #print(original_vocabulary.real_news)
+# print(original_vocabulary.real_news_size)
+# print()
+# print("FAKE NEWS")
+# #print(original_vocabulary.fake_news)
+# print(original_vocabulary.fake_news_size)
 
 
-print()
+# print()
 
 print("------------------------FILTERED VOCABULARY------------------------")
-filtered_vocabulary = Vocabulary('./datasets/covid_training.tsv', True)
+filtered_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', True)
 print("Real News")
 #print(filtered_vocabulary.real_news)
 print(filtered_vocabulary.real_news_size)
