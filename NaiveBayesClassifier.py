@@ -102,10 +102,65 @@ class NaiveBayesClassifier:
             correct = "correct" if prediction == row[2] else "wrong"
             # Print one line of output
             output.write(f'{row[0]}  {prediction}  {score}  {row[2]}  {correct}\n')
+    
+    def compute_metrics(self, filtered):
+        tracefile = "trace_NB-BOW-FV.txt" if filtered else "trace_NB-BOW-OV.txt"
+        ofilename = "eval_NB-BOW-FV.txt" if filtered else "eval_NB-BOW-OV.txt"
+        trace = open(tracefile, 'r')
+        output = open(ofilename, 'w')
 
+        count_correct = 0
+        count_wrong = 0
+
+        true_positives_real = 0
+        false_positives_real = 0
+        false_negatives_real = 0
+
+        true_positives_fake = 0
+        false_positives_fake = 0
+        false_negatives_fake = 0
+
+        for row in trace:
+            entries = row.split("  ")
+            if(entries[4] == 'correct\n'):
+                count_correct += 1
+            else:
+                count_wrong += 1
+            
+            if(entries[1] == 'yes'):
+                if(entries[3] == 'yes'):
+                    true_positives_real += 1
+                else:
+                    false_positives_real += 1
+                    false_negatives_fake += 1
+            else:
+                if(entries[3] == 'no'):
+                    true_positives_fake += 1
+                else:
+                    false_positives_fake += 1
+                    false_negatives_real += 1
+        
+        accuracy = "{:.4}".format(count_correct / (count_wrong + count_correct))
+        output.write(f'{accuracy}\n')
+
+        precision_real = true_positives_real/(true_positives_real + false_positives_real)
+        precision_fake = true_positives_fake/(true_positives_fake + false_positives_fake)
+        output.write(f'{"{:.4}".format(precision_real)}  {"{:.4}".format(precision_fake)}\n')
+
+        
+        recall_real = true_positives_real/(true_positives_real + false_negatives_real)
+        recall_fake = true_positives_fake/(true_positives_fake + false_negatives_fake)
+        output.write(f'{"{:.4}".format(recall_real)}  {"{:.4}".format(recall_fake)}\n')
+
+        f1_measure_real = 2 * precision_real * recall_real / (precision_real + recall_real)
+        f1_measure_fake = 2 * precision_fake * recall_fake / (precision_fake + recall_fake)
+        output.write(f'{"{:.4}".format(f1_measure_real)}  {"{:.4}".format(f1_measure_fake)}\n')
+        
 print("Naive Bayes Classifier")
 print("Original Vocabulary...")
 original_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', False)
+original_vocabulary.compute_metrics(False)
 print("Filtered Vocabulary...")
 filtered_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', True)
+filtered_vocabulary.compute_metrics(True)
 print("Success!")
