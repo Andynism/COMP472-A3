@@ -128,12 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-<<<<<<< HEAD
 # IDE
 .vscode
 .idea
-=======
-# IDE files
-.vscode/
-.idea/
->>>>>>> cd9481a... Refactored code and added logic for creating output files
