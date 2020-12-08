@@ -7,6 +7,7 @@ class NaiveBayesClassifier:
     def __init__(self, dataset, filtered):
         tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
         self.vocabulary = []
+        self.filtered = filtered
 
         self.real_news = {}
         self.total_words_real = 0
@@ -21,8 +22,7 @@ class NaiveBayesClassifier:
         self.p_fake = 0
 
         self.create_vocabulary(tsv_file)
-        self.probability_dictionary(filtered)
-        self.evaluate_tweets(dataset, filtered)
+        self.probability_dictionary()
     
     def create_vocabulary(self, tsv_file):
         for row in tsv_file:
@@ -52,10 +52,10 @@ class NaiveBayesClassifier:
             else:
                 print(row)
     
-    def probability_dictionary(self, filtered):
+    def probability_dictionary(self):
         skipped = []
         for word in self.vocabulary:
-            if(filtered and self.fake_news[word] + self.real_news[word] == 1):
+            if(self.filtered and self.fake_news[word] + self.real_news[word] == 1):
                 skipped.append(word)
         
         for word in skipped:
@@ -75,13 +75,11 @@ class NaiveBayesClassifier:
         self.p_real = self.total_real_tweets / total_tweets
         self.p_fake = self.total_fake_tweets / total_tweets
     
-    def evaluate_tweets(self, dataset, filtered):
+    def evaluate_tweets(self, dataset):
         tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
-        ofilename = "trace_NB-BOW-FV.txt" if filtered else "trace_NB-BOW-OV.txt"
+        ofilename = "trace_NB-BOW-FV.txt" if self.filtered else "trace_NB-BOW-OV.txt"
         output = open(ofilename, 'w')
         for row in tsv_file:
-            if(row[0] == 'tweet_id'):
-                continue
             real_news_score = 0
             fake_news_score = 0
 
@@ -103,9 +101,9 @@ class NaiveBayesClassifier:
             # Print one line of output
             output.write(f'{row[0]}  {prediction}  {score}  {row[2]}  {correct}\n')
     
-    def compute_metrics(self, filtered):
-        tracefile = "trace_NB-BOW-FV.txt" if filtered else "trace_NB-BOW-OV.txt"
-        ofilename = "eval_NB-BOW-FV.txt" if filtered else "eval_NB-BOW-OV.txt"
+    def compute_metrics(self):
+        tracefile = "trace_NB-BOW-FV.txt" if self.filtered else "trace_NB-BOW-OV.txt"
+        ofilename = "eval_NB-BOW-FV.txt" if self.filtered else "eval_NB-BOW-OV.txt"
         trace = open(tracefile, 'r')
         output = open(ofilename, 'w')
 
@@ -159,8 +157,10 @@ class NaiveBayesClassifier:
 print("Naive Bayes Classifier")
 print("Original Vocabulary...")
 original_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', False)
-original_vocabulary.compute_metrics(False)
+original_vocabulary.evaluate_tweets('./datasets/covid_test_public.tsv')
+original_vocabulary.compute_metrics()
 print("Filtered Vocabulary...")
 filtered_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', True)
-filtered_vocabulary.compute_metrics(True)
+filtered_vocabulary.evaluate_tweets('./datasets/covid_test_public.tsv')
+filtered_vocabulary.compute_metrics()
 print("Success!")
