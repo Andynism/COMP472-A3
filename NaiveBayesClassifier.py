@@ -3,7 +3,7 @@ import math
 
 class NaiveBayesClassifier:
     def __init__(self, dataset, filtered):
-        tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
+        tsv_file = csv.reader(open(dataset, encoding="UTF-8"), delimiter="\t")
         self.real_news = {}
         self.real_news_size = 0
         self.real_news_probability = {}
@@ -69,7 +69,7 @@ class NaiveBayesClassifier:
             self.fake_news_probability[key] = math.log(value/self.fake_news_size)
     
     def evaluate_tweets(self, dataset):
-        tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
+        tsv_file = csv.reader(open(dataset, encoding="UTF-8"), delimiter="\t")
         self.total_size = self.fake_news_training_size + self.real_news_training_size
         for row in tsv_file:
             real_news_score = 0
