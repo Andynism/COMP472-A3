@@ -101,7 +101,7 @@ class NaiveBayesClassifier:
 
             correct = "correct" if prediction == row[2] else "wrong"
             # Print one line of output
-            output.write(f'{row[0]}  {prediction}  {score}  {row[2]}  {correct}')
+            output.write(f'{row[0]}  {prediction}  {score}  {row[2]}  {correct}\n')
 
 print("Naive Bayes Classifier")
 print("Original Vocabulary...")
