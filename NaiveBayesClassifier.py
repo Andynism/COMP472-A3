@@ -88,25 +88,25 @@ class NaiveBayesClassifier:
                 print("FAKE NEWS", row[2])
 
 
-# print("------------------------ORIGINAL VOCABULARY------------------------")
-# original_vocabulary = Vocabulary('./datasets/covid_training.tsv', False)
-# print("Real News")
-# #print(original_vocabulary.real_news)
-# print(original_vocabulary.real_news_size)
-# print()
-# print("FAKE NEWS")
-# #print(original_vocabulary.fake_news)
-# print(original_vocabulary.fake_news_size)
-
-
-# print()
-
-print("------------------------FILTERED VOCABULARY------------------------")
-filtered_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', True)
+print("------------------------ORIGINAL VOCABULARY------------------------")
+original_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', False)
 print("Real News")
-#print(filtered_vocabulary.real_news)
-print(filtered_vocabulary.real_news_size)
+#print(original_vocabulary.real_news)
+print(original_vocabulary.real_news_size)
 print()
 print("FAKE NEWS")
-#print(filtered_vocabulary.fake_news)
-print(filtered_vocabulary.fake_news_size)
+#print(original_vocabulary.fake_news)
+print(original_vocabulary.fake_news_size)
+
+
+# print()
+
+# print("------------------------FILTERED VOCABULARY------------------------")
+# filtered_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', True)
+# print("Real News")
+# #print(filtered_vocabulary.real_news)
+# print(filtered_vocabulary.real_news_size)
+# print()
+# print("FAKE NEWS")
+# #print(filtered_vocabulary.fake_news)
+# print(filtered_vocabulary.fake_news_size)
