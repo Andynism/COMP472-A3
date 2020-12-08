@@ -31,6 +31,7 @@ class NaiveBayesClassifier:
             if(row[2] == 'yes'):
                 self.total_real_tweets += 1
                 for word in row[1].split():
+                    word = word.lower()
                     if(word not in self.vocabulary):
                         self.vocabulary.append(word)
                         self.real_news[word] = 0
@@ -42,6 +43,7 @@ class NaiveBayesClassifier:
             elif (row[2] == 'no'):
                 self.total_fake_tweets += 1
                 for word in row[1].split():
+                    word = word.lower()
                     if(word not in self.vocabulary):
                         self.vocabulary.append(word)
                         self.real_news[word] = 0
