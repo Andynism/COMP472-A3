@@ -76,6 +76,8 @@ class NaiveBayesClassifier:
         total_tweets = self.total_real_tweets + self.total_fake_tweets
         self.p_real = self.total_real_tweets / total_tweets
         self.p_fake = self.total_fake_tweets / total_tweets
+
+        print(f'Length of vocabulary: {len(self.vocabulary)}')
     
     def evaluate_tweets(self, dataset):
         tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
