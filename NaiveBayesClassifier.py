@@ -103,20 +103,9 @@ class NaiveBayesClassifier:
             # Print one line of output
             output.write(f'{row[0]}  {prediction}  {score}  {row[2]}  {correct}')
 
-
-# print("------------------------ORIGINAL VOCABULARY------------------------")
-# original_vocabulary = Vocabulary('./datasets/covid_training.tsv', False)
-# print("Real News")
-# #print(original_vocabulary.real_news)
-# print(original_vocabulary.total_words_real)
-# print()
-# print("FAKE NEWS")
-# #print(original_vocabulary.fake_news)
-# print(original_vocabulary.total_words_fake)
-
-
-# print()
-
-print("Doing Naive Bayes Classifier")
+print("Naive Bayes Classifier")
+print("Original Vocabulary...")
+original_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', False)
+print("Filtered Vocabulary...")
 filtered_vocabulary = NaiveBayesClassifier('./datasets/covid_training.tsv', True)
 print("Success!")
