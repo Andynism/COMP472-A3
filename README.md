@@ -7,3 +7,4 @@ https://github.com/Andynism/COMP472-A3
 - [Mike Brichko](https://github.com/MikeBrichko)
 
 ## Instructions
+To run the program, use the command ```python NaiveBayesClassifier.py```.
