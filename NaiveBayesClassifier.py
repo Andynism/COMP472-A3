@@ -1,5 +1,4 @@
 import csv
-import math
 
 DELTA = 0.01
 
@@ -81,7 +80,7 @@ class NaiveBayesClassifier:
     
     def evaluate_tweets(self, dataset):
         tsv_file = csv.reader(open(dataset, encoding="mbcs"), delimiter="\t")
-        ofilename = "trace_NB-BOW-FV.txt" if self.filtered else "trace_NB-BOW-OV.txt"
+        ofilename = "output/trace_NB-BOW-FV.txt" if self.filtered else "output/trace_NB-BOW-OV.txt"
         output = open(ofilename, 'w')
         for row in tsv_file:
             real_news_score = 0
@@ -106,8 +105,8 @@ class NaiveBayesClassifier:
             output.write(f'{row[0]}  {prediction}  {score}  {row[2]}  {correct}\n')
     
     def compute_metrics(self):
-        tracefile = "trace_NB-BOW-FV.txt" if self.filtered else "trace_NB-BOW-OV.txt"
-        ofilename = "eval_NB-BOW-FV.txt" if self.filtered else "eval_NB-BOW-OV.txt"
+        tracefile = "output/trace_NB-BOW-FV.txt" if self.filtered else "output/trace_NB-BOW-OV.txt"
+        ofilename = "output/eval_NB-BOW-FV.txt" if self.filtered else "output/eval_NB-BOW-OV.txt"
         trace = open(tracefile, 'r')
         output = open(ofilename, 'w')
 
