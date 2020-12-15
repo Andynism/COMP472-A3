@@ -1,4 +1,5 @@
 import csv
+import math
 
 DELTA = 0.01
 
@@ -88,10 +89,10 @@ class NaiveBayesClassifier:
 
             for word in row[1].split():
                 if(word in self.p_real_given_word):
-                    real_news_score += self.p_real_given_word.get(word)
+                    real_news_score += math.log(self.p_real_given_word.get(word), 10)
 
                 if(word in self.p_fake_given_word):
-                    fake_news_score += self.p_fake_given_word.get(word)
+                    fake_news_score += math.log(self.p_fake_given_word.get(word), 10)
 
             prediction = "yes"
             score = real_news_score
